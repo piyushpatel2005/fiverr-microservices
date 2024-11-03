@@ -26,8 +26,8 @@ services:
     command: --default-authentication-plugin=mysql_native_password
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: fiverr_auth
-      MYSQL_USER: fiverr
+      MYSQL_DATABASE: jobber_auth
+      MYSQL_USER: jobber
       MYSQL_PASSWORD: password
     volumes:
       - ./docker-volumes/mysql:/var/lib/mysql
@@ -38,8 +38,8 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_DB: fiverr_reviews
-      POTSGRES_USER: fiverr
+      POSTGRES_DB: jobber_reviews
+      POTSGRES_USER: jobber
       POSTGRES_PASSWORD: password
     volumes:
       - ./docker-volumes/postgres:/var/lib/postgresql
@@ -51,7 +51,7 @@ services:
       - "5672:5672" # AMQP
       - "15672:15672" # Web UI management port
     # environment:
-    #   RABBITMQ_DEFAULT_USER: fiverr
+    #   RABBITMQ_DEFAULT_USER: jobber
     #   RABBITMQ_DEFAULT_PASS: password
     volumes:
       - ./docker-volumes/rabbitmq:/var/lib/rabbitmq
