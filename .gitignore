@@ -10,3 +10,4 @@ docker-volumes/
 **/logs/
 **/logs/*
 **/*.log
+secrets.md
