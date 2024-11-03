@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./services/9-jobber-shared
+        working-directory: ./services/9-fiverr-shared
     permissions:
       contents: read
       packages: write
