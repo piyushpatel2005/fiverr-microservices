@@ -50,9 +50,9 @@ services:
     ports:
       - "5672:5672" # AMQP
       - "15672:15672" # Web UI management port
-    # environment:
-    #   RABBITMQ_DEFAULT_USER: jobber
-    #   RABBITMQ_DEFAULT_PASS: password
+    environment:
+      RABBITMQ_DEFAULT_USER: jobber
+      RABBITMQ_DEFAULT_PASS: password
     volumes:
       - ./docker-volumes/rabbitmq:/var/lib/rabbitmq
   elasticsearch:

@@ -69,3 +69,16 @@ This is a freelance marketplace where sellers can create gigs and buyers an purc
 ```shell
 docker compose up -d
 ```
+## Shared Libraries
+
+- Includes models for different services.
+- Includes error handling functionality
+- Includes API Gateway communication with microservices.
+
+## Notification Service
+
+- Send email for verifying email when signing up.
+- Send email for forgot password, for resetting.
+- Notify when password is reset.
+- Offer email notifications for a gig where seller can send an offer to the buyer.
+- When order is placed, send email to the buyer and seller. This includes sending email to seller when order is placed, when order is received send receipt to the buyer, when an order extension request is made, when extension is approved from the seller, when a buyer delivers an order, when an order is cancelled.
