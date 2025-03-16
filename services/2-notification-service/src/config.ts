@@ -7,7 +7,7 @@ class Config {
     public CLIENT_URL: string | undefined;
     public SENDER_EMAIL: string | undefined;
     public SENDER_EMAIL_PASSWORD: string | undefined;
-    public RABBIGMQ_ENDPOINT: string | undefined;
+    public RABBITMQ_ENDPOINT: string | undefined;
     public ELASTIC_SEARCH_URL: string | undefined;
 
     constructor() {
@@ -15,9 +15,9 @@ class Config {
         this.CLIENT_URL = process.env.CLIENT_URL || '';
         this.SENDER_EMAIL = process.env.SENDER_EMAIL || '';
         this.SENDER_EMAIL_PASSWORD = process.env.SENDER_EMAIL_PASSWORD || '';
-        this.RABBIGMQ_ENDPOINT = process.env.RABBIGMQ_ENDPOINT || '';
+        this.RABBITMQ_ENDPOINT = process.env.RABBITMQ_ENDPOINT || '';
         this.ELASTIC_SEARCH_URL = process.env.ELASTIC_SEARCH_URL || '';
     }
 }
 
-export const config = new Config();
+export const config: Config = new Config();
