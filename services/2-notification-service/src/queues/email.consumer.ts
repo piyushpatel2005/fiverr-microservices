@@ -1,8 +1,9 @@
 import { Channel, ConsumeMessage } from "amqplib";
 import { Logger } from 'winston';
-import { winstonLogger } from '@piyushpatel2005/jobber-shared';
+import { IEmailLocals, winstonLogger } from '@piyushpatel2005/jobber-shared';
 import { config } from '@notifications/config';
 import { createConnection } from "@notifications/queues/connection";
+import { sendEmail } from "@notifications/queues/mail.transport";
 
 const log: Logger = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'emailConsumer', 'debug');
 
@@ -18,8 +19,16 @@ async function consumeAuthEmailMessages(channel: Channel): Promise<void> {
         const jobberQueue = await channel.assertQueue(queueName, { durable: true, autoDelete: false });
         await channel.bindQueue(jobberQueue.queue, exchangeName, routingKey);
         channel.consume(jobberQueue.queue, async (message: ConsumeMessage | null) => {
-            console.log(JSON.parse(message!.content.toString()));
+            const { receiverEmail, username, verifyLink, resetLink, template } = JSON.parse(message!.content.toString());
+            const locals: IEmailLocals = {
+                appLink: `${config.CLIENT_URL}`,
+                appIcon: 'https://i.ibb.co/Kyp2m0t/cover.png',
+                username,
+                verifyLink,
+                resetLink
+            };
             // send emails
+            await sendEmail(template, receiverEmail, locals);
             // acknowledge
             channel.ack(message!);
         });
@@ -39,11 +48,68 @@ async function consumeOrderEmailMessages(channel: Channel): Promise<void> {
         await channel.assertExchange(exchangeName, 'direct');
         const jobberQueue = await channel.assertQueue(queueName, { durable: true, autoDelete: false });
         await channel.bindQueue(jobberQueue.queue, exchangeName, routingKey);
-        channel.consume(jobberQueue.queue, async (message: ConsumeMessage | null) => {
-            console.log(JSON.parse(message!.content.toString()));
+        channel.consume(jobberQueue.queue, async (msg: ConsumeMessage | null) => {
+            const {
+                receiverEmail,
+                username,
+                template,
+                sender,
+                offerLink,
+                amount,
+                buyerUsername,
+                sellerUsername,
+                title,
+                description,
+                deliveryDays,
+                orderId,
+                orderDue,
+                requirements,
+                orderUrl,
+                originalDate,
+                newDate,
+                reason,
+                subject,
+                header,
+                type,
+                message,
+                serviceFee,
+                total
+            } = JSON.parse(msg!.content.toString());
+            const locals: IEmailLocals = {
+                appLink: `${config.CLIENT_URL}`,
+                appIcon: 'https://i.ibb.co/Kyp2m0t/cover.png',
+                username,
+                sender,
+                offerLink,
+                amount,
+                buyerUsername,
+                sellerUsername,
+                title,
+                description,
+                deliveryDays,
+                orderId,
+                orderDue,
+                requirements,
+                orderUrl,
+                originalDate,
+                newDate,
+                reason,
+                subject,
+                header,
+                type,
+                message,
+                serviceFee,
+                total
+            };
             // send emails
+            if (template === 'orderPlaced') {
+                await sendEmail('orderPlaced', receiverEmail, locals);
+                await sendEmail('orderReceipt', receiverEmail, locals);
+            } else {
+                await sendEmail(template, receiverEmail, locals);
+            }
             // acknowledge
-            channel.ack(message!);
+            channel.ack(msg!);
         });
     } catch (error) {
         log.log('error', 'NotificationService EmailConsumer consumeOrderEmailMessages() method error:', error);

@@ -7,7 +7,6 @@ import { ClusterHealthHealthResponseBody } from '@elastic/elasticsearch/lib/api/
 
 const log: Logger = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'notificationElasticSearchServer', 'debug');
 
-console.log(config);
 const elasticSearchClient = new Client({
     node: `${config.ELASTIC_SEARCH_URL}`
 });

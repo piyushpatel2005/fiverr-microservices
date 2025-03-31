@@ -1,4 +1,4 @@
-import { winstonLogger } from '@piyushpatel2005/jobber-shared';
+import { IEmailMessageDetails, winstonLogger } from '@piyushpatel2005/jobber-shared';
 import 'express-async-errors';
 import { Logger } from 'winston';
 import { config } from '@notifications/config';
@@ -8,7 +8,7 @@ import { healthRoutes } from '@notifications/routes';
 import { checkConnection } from '@notifications/elasticsearch';
 import { createConnection } from '@notifications/queues/connection';
 import { Channel } from 'amqplib';
-import { consumeAuthEmailMessages, consumeOrderEmailMessages } from './queues/email.consumer';
+import { consumeAuthEmailMessages, consumeOrderEmailMessages } from '@notifications/queues/email.consumer';
 
 const SERVER_PORT = 4001;
 const log: Logger = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'notificationServer', 'debug');
@@ -25,14 +25,21 @@ async function startQueues(): Promise<void> {
     await consumeAuthEmailMessages(emailChannel);
     await consumeOrderEmailMessages(emailChannel);
 
-    await emailChannel.assertExchange('jobber-email-notification', 'direct');
-    await emailChannel.assertExchange('jobber-order-notification', 'direct');
+    // const verificationLink = `${config.CLIENT_URL}/confirm_email?v_token=32543te5635ter`;
+    // const messageDetails: IEmailMessageDetails = {
+    //     receiverEmail: `${config.SENDER_EMAIL}`,
+    //     resetLink: verificationLink,
+    //     username: 'Unknown User',
+    //     template: 'forgotPassword'
+    // }
 
-    const message = JSON.stringify({ name: 'jobber', service: 'email notification service' });
-    emailChannel.publish('jobber-email-notification', 'auth-email', Buffer.from(message));
+    // await emailChannel.assertExchange('jobber-email-notification', 'direct');
+    // const message = JSON.stringify(messageDetails);
+    // emailChannel.publish('jobber-email-notification', 'auth-email', Buffer.from(message));
 
-    const message2 = JSON.stringify({ name: 'jobber', service: 'order notification service' });
-    emailChannel.publish('jobber-order-notification', 'order-email', Buffer.from(message2));
+    // await emailChannel.assertExchange('jobber-order-notification', 'direct');
+    // const message2 = JSON.stringify({ name: 'jobber', service: 'order notification service' });
+    // emailChannel.publish('jobber-order-notification', 'order-email', Buffer.from(message2));
 }
 
 function startElasticSearch(): void {
